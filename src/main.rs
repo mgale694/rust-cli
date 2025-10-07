@@ -14,17 +14,17 @@ struct Cli {
 
 fn main() -> Result<()> {
     let args = Cli::parse();
-    
+
     let file = File::open(&args.path)
         .with_context(|| format!("could not read file `{}`", args.path.display()))?;
     let reader = BufReader::new(file);
-    
+
     for line in reader.lines() {
         let line = line?;
         if line.contains(&args.pattern) {
             println!("{}", line);
         }
     }
-    
+
     Ok(())
 }
