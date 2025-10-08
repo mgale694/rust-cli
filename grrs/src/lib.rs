@@ -19,6 +19,8 @@ pub fn find_matches(
 
 #[cfg(test)]
 mod tests {
+    use assert_fs::prelude::FileWriteStr;
+
     use super::*;
 
     #[test]
@@ -26,13 +28,12 @@ mod tests {
         let mut result = Vec::new();
 
         // Create a temporary file for testing
-        use std::io::Write;
-        use tempfile::NamedTempFile;
+        use assert_fs::NamedTempFile;
 
-        let mut temp_file = NamedTempFile::new().unwrap();
-        writeln!(temp_file, "This is a test").unwrap();
-        writeln!(temp_file, "finder").unwrap();
-        writeln!(temp_file, "not this").unwrap();
+        let temp_file = NamedTempFile::new("temp.txt").unwrap();
+        temp_file
+            .write_str("This is a test\nfinder\nnot this\n")
+            .unwrap();
 
         let file = File::open(temp_file.path()).unwrap();
         let reader = BufReader::new(file);
