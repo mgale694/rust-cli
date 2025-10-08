@@ -1,8 +1,9 @@
 // This is the most popular library for CLI parsing
 // https://docs.rs/clap/latest/clap/
 use clap::Parser;
+use grrs::find_matches;
 use std::fs::File;
-use std::io::{BufReader, prelude::*};
+use std::io::BufReader;
 
 #[derive(Parser)]
 #[command(version, about, long_about = None)]
@@ -24,14 +25,7 @@ fn main() -> std::io::Result<()> {
     // Create a buffered reader on top of that file
     let reader = BufReader::new(f);
 
-    for line in reader.lines() {
-        // Ignore errors on lines
-        let line = line?;
-        // Check if the line contains the pattern
-        if line.contains(&args.pattern) {
-            println!("{}", line);
-        }
-    }
+    find_matches(reader, &args.pattern, &mut std::io::stdout())?;
 
     Ok(())
 }
